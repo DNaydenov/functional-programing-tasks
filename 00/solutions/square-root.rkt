@@ -7,11 +7,11 @@
     (/ (round (* power z)) power)))
 
 (define (my-sqrt x)
-  (define (call-me last-res goal-res)
-    (if (= (round-off last-res 4) (round-off goal-res 4))
+  (define (call-me last-res last-last)
+    (if (< (- last-res last-last) 0.0001)
         (round-off last-res 4)
         (call-me (exact->inexact
                   (/ (+ last-res (exact->inexact (/ x last-res))) 2))
-                 goal-res)))
-  (call-me 10 (sqrt x)))
+                 last-res)))
+  (call-me 10 0))
 
