@@ -12,12 +12,22 @@
   (lambda (f v)
     (f (n f v))))
 
-(define (from-numeral n) void)
 
-(define (to-numeral n) void)
+(define (from-numeral n)
+  (n (lambda (i) (+ i 1)) 0))
 
-(define (plus n m) void)
+(define (to-numeral n)
+    (if (zero? n) zero
+        (succ (to-numeral (- n 1)))))
 
-(define (mult n m) void)
+(define (plus n m)
+   (lambda (f v)
+        (m f (n f v))))
+
+(define (mult n m )
+  (lambda (f v)
+       (n
+        (lambda (val) (m f val))
+        v)))
 
 (define (pred n) void)
