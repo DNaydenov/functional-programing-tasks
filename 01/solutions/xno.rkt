@@ -45,13 +45,7 @@
                       (map (lambda (ij)
                              (best-outcome (place game (car ij) (cdr ij) p) not-p (not maximilize?) perspective))
                            possible-turns.))))) 
-(define eg `((#f #f #f)
-             (#f #f #f)
-             (#f #f #f)))
 
-(define b  '(("X" "O" "X")
-             ("X" "X" "O")
-             ("O" #f #f)))
 
  
 (define (play-1 curr-board curr-sign)
