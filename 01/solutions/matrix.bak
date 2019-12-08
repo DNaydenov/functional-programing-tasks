@@ -1,0 +1,108 @@
+#lang racket
+
+(provide all?
+         any?
+         concat
+         rows
+         cols
+         matrix-ref
+         set
+         place
+         diag
+         diags
+         map-matrix
+         filter-matrix
+         zip-with
+         zip-matrix)
+; the provide "exports" these functions
+
+; 00.
+(define (all? p? xs)
+  (if (null? xs) #t
+      (and (p? (car xs))
+           (all? p? (cdr xs)))))
+
+; 01.
+(define (any? p? xs)
+  (if (null? xs) #f
+      (or (p? (car xs))
+          (any? p? (cdr xs)))))
+
+; 02.
+(define (concat xss)
+  (if (null? xss) `()
+      (append (car xss)
+             (concat (cdr xss)))))
+
+; 03.
+(define (rows xss)
+  (if (null? xss) `()
+      (cons (car xss)
+              (rows (cdr xss)))))
+
+; 04.
+(define (cols xss)
+  (if (null? (car xss)) `()
+      (cons (map car xss)
+            (cols (map cdr xss)))))
+
+; 05.
+(define (matrix-ref xss i j)
+  (cond ((null? xss) -1)
+        ((zero? i) (list-ref (car xss) j))
+        (else (matrix-ref (cdr xss) (- i 1) j))))
+
+; 06.
+(define (set xs i x)
+  (cond ((null? xs) `())
+        ((zero? i) (cons x (cdr xs)))
+        (else (cons (car xs) (set (cdr xs) (- i 1) x)))))
+
+; 07.
+(define (place xss i j x)
+  (cond ((null? xss) `())
+        ((zero? i) (cons (set (car xss) j x)
+                         (cdr xss)))
+        (else (cons (car xss)
+                    (place (cdr xss) (- i 1) j x)))))
+
+; 08.
+(define (diag xss)
+  (if (null? xss) `()
+      (cons (car (car xss))
+            (diag (map cdr (cdr xss))))))
+
+; 09.
+(define (diags xss)
+  (define (reverse-matrix xss)
+    (if (null? xss) `()
+        (append (reverse-matrix (cdr xss)) (list (car xss)))))
+  (list (diag xss) (reverse (diag (reverse-matrix xss)))))
+
+; 10.
+(define (map-matrix f xss)
+  (if (null? xss) `()
+      (cons (map f (car xss))
+            (map-matrix f (cdr xss)))))
+
+; 11.
+(define (filter-matrix p? xss)
+  (if (null? xss) `()
+      (cons (filter p? (car xss))
+            (filter-matrix p? (cdr xss)))))
+
+; 12.
+(define (zip-with f xs ys)
+  (map f
+       (take xs (min (length xs)
+                     (length ys)))
+       (take ys (min (length xs)
+                     (length ys)))))
+
+; 13.
+(define (zip-matrix xss yss)
+  (if (or (null? xss)
+           (null? yss))
+      `()
+      (cons (zip-with cons (car xss) (car yss))
+            (zip-matrix (cdr xss) (cdr yss)))))
