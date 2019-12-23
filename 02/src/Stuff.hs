@@ -19,8 +19,10 @@ group (x:xs) = takeWhile (==x) (x:xs) : group (dropWhile (==x) xs)
 
 sortBy :: (a -> a -> Ordering) -> [a] -> [a]
 sortBy _ [] = []
-sortBy f (x:xs) = sortBy f (filter (\y -> (y `f` x)==LT)  xs) ++ [x] ++
-                  sortBy f (filter (\y -> (y `f` x)/=LT)  xs)
+f `sortBy` (x:xs) 
+  = f `sortBy` filter (\y -> (y `f` x)==LT)  xs
+  ++ [x]
+  ++ f `sortBy` filter (\y -> (y `f` x)/=LT)  xs
 
 groupBy :: (a -> a -> Bool) -> [a] -> [[a]]
 groupBy _ [] = [] 
